@@ -1,0 +1,52 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "description": "Append-only audit ledger for every money movement in the budgeting system. Nothing here is ever updated or deleted — it's the source of truth for 'what happened and when', and later feeds lottery ticket calculations.",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User this transaction belongs to."
+    },
+    "goal_id": {
+      "type": "string",
+      "description": "SavingsGoal this transaction relates to, if any (absent for a plain main-balance deposit)."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "main_deposit",
+        "piggy_bank_funding",
+        "daily_contribution",
+        "daily_miss",
+        "forfeiture",
+        "goal_completed"
+      ],
+      "description": "main_deposit: external funds added to the user's Wallet. piggy_bank_funding: main balance (or an external top-up) moved into a goal's piggy bank. daily_contribution: the scheduled evaluator moved a day's target from piggy bank to savings pot. daily_miss: the scheduled evaluator found the piggy bank short for the day (no money moved). forfeiture: 3rd consecutive miss swept the savings pot to the LotteryPot. goal_completed: the final daily_contribution that brought the savings pot to the target amount."
+    },
+    "amount_pence": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Amount moved, in pence. 0 for a logged daily_miss (no money moves on a miss)."
+    },
+    "from_pot": {
+      "type": "string",
+      "enum": ["external", "main", "piggy_bank", "savings_pot", "none"],
+      "description": "Where the money came from."
+    },
+    "to_pot": {
+      "type": "string",
+      "enum": ["main", "piggy_bank", "savings_pot", "lottery_pot", "none"],
+      "description": "Where the money went."
+    },
+    "occurred_on": {
+      "type": "string",
+      "format": "date",
+      "description": "Calendar date (in the goal's timezone, where relevant) this event applies to."
+    },
+    "note": {
+      "type": "string",
+      "description": "Optional free-text context, e.g. flagging a simulated deposit."
+    }
+  },
+  "required": ["user_id", "type", "amount_pence", "occurred_on"]
+}

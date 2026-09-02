@@ -1,0 +1,18 @@
+{
+  "name": "Wallet",
+  "type": "object",
+  "description": "One Wallet per user. Holds the user's general funds ('main balance') that they can transfer into a goal's piggy bank pot. In production this balance would be reconciled against a real payment/banking rail; for the budgeting MVP, deposits are simulated via the depositToMain function.",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Base44 user id (base44.auth.me().id) that owns this wallet. Exactly one wallet per user, created lazily on first use."
+    },
+    "main_balance_pence": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "General funds available to the user, in pence (GBP minor units), not yet allocated to any goal's piggy bank pot."
+    }
+  },
+  "required": ["user_id"]
+}
