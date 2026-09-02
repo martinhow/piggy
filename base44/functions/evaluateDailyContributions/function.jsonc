@@ -1,0 +1,16 @@
+{
+  "name": "evaluateDailyContributions",
+  "entry": "entry.ts",
+  "automations": [
+    {
+      "type": "scheduled",
+      "name": "hourly_goal_evaluation",
+      "description": "Runs every hour. For every active SavingsGoal, works out that goal's current local calendar date (using its own timezone) and evaluates any day(s) not yet processed: moves that day's target piggy bank -> savings pot on a hit, logs a miss otherwise, and forfeits the savings pot to the LotteryPot on the 3rd consecutive miss.",
+      "is_active": true,
+      "schedule_mode": "recurring",
+      "schedule_type": "simple",
+      "repeat_unit": "hours",
+      "repeat_interval": 1
+    }
+  ]
+}

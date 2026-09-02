@@ -1,0 +1,24 @@
+{
+  "name": "LotteryPot",
+  "type": "object",
+  "description": "Shared prize pool funded by forfeited savings. This is a deliberately minimal placeholder entity for the budgeting phase — it only needs to exist so forfeitures have somewhere to land. The draw / ticket-allocation / winner-selection mechanism is the separate lottery feature, not built yet.",
+  "properties": {
+    "period_label": {
+      "type": "string",
+      "description": "Label for the pool period this balance is accumulating for, e.g. '2026-09'. Left absent while there is a single ongoing 'open' pot with no fixed period yet — the lottery feature will decide how periods are cut."
+    },
+    "total_balance_pence": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Running total of forfeited pence swept into this pot."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "drawn"],
+      "default": "open",
+      "description": "open: still accumulating forfeitures. drawn: a draw has happened for this pot (set by the future lottery feature, not by anything in this budgeting code)."
+    }
+  },
+  "required": []
+}

@@ -1,0 +1,67 @@
+{
+  "name": "SavingsGoal",
+  "type": "object",
+  "description": "A single savings challenge: 'save £X over N days'. A user may create many goals over time (one after another), but at most one may be 'active' at once — enforced in the createGoal function, not by the schema. Money flows: piggy_bank_balance_pence -> savings_pot_balance_pence on each successful daily check; savings_pot_balance_pence -> the shared LotteryPot when 3 consecutive days are missed (forfeiture).",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Base44 user id of the goal's owner."
+    },
+    "target_amount_pence": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total amount the user wants to save, in pence (e.g. £10,000.00 -> 1000000)."
+    },
+    "duration_days": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of days over which the goal should be met (e.g. 300)."
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "First calendar date (evaluated in the goal's own timezone) that a daily target applies."
+    },
+    "timezone": {
+      "type": "string",
+      "default": "Europe/London",
+      "description": "IANA timezone name (e.g. 'Europe/London') used to determine this goal's 'day' boundary for the daily target check. Each goal carries its own timezone so the scheduled evaluator can compute 'today' correctly per user."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "completed", "failed"],
+      "default": "active",
+      "description": "active = in progress. completed = savings_pot_balance_pence reached target_amount_pence. failed = forfeited after 3 consecutive missed days; the goal is over and the user would start a new one."
+    },
+    "piggy_bank_balance_pence": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Buffer pot the user pre-funds (directly at goal creation, or later via fundPiggyBank). The daily evaluator draws that day's target out of here into the savings pot."
+    },
+    "savings_pot_balance_pence": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Accumulated genuine savings toward the goal. Wiped to 0 (and the wiped amount swept to the shared LotteryPot) if the goal is forfeited."
+    },
+    "current_streak_misses": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Consecutive missed days. Resets to 0 on any successful day; reaching 3 triggers forfeiture."
+    },
+    "days_evaluated_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Number of scheduled days processed so far. Also used as the index into the daily-target schedule (see dailyTargetForDay in shared/budgeting.ts)."
+    },
+    "last_evaluated_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last calendar date (in the goal's timezone) that was fully evaluated by the scheduled job. Absent before the first evaluation run."
+    }
+  },
+  "required": ["user_id", "target_amount_pence", "duration_days", "start_date"]
+}
