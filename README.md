@@ -76,3 +76,14 @@ npm run build     # build every workspace
 npm run typecheck # check every workspace
 npm run lint      # lint every workspace
 ```
+
+### Lottery API (development only)
+
+The API currently uses an in-memory implementation of the lottery rules. Set `PRIZE_POOL_STARTING_PENCE` to seed the prize pool, then use these endpoints:
+
+- `POST /api/lottery/plans` — create a daily plan with `userId`, `targetPence`, `requiredContributionPence`, and `createdAt` (`YYYY-MM-DD`)
+- `POST /api/lottery/plans/:planId/daily-contributions` — submit `amountPence` and `date`; a third consecutive contribution below the required amount forfeits the entire pot
+- `POST /api/lottery/draws/monthly` — run a winner-takes-all draw with `drawnAt`; tickets are one per whole £1 saved
+- `GET /api/lottery` — inspect the current pool, plans, and draw history
+
+All amounts are integer pence. This is deliberately a prototype: it does not persist data, connect to payment providers, or move funds.
